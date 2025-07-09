@@ -65,6 +65,21 @@ class WizardComponent extends Component
     }
 
     /**
+     * is step accessible?
+     * This checks if the step is accessible based on its enabled and visible state.
+     * If the step is not found, it returns false.
+     */
+    public function isAccessible(Step|string|StepDetails $step) : bool
+    {
+        $step = $this->getStep($step);
+        if (!$step) {
+            return false; // Step not found
+        }
+        // Check if the step is enabled and visible
+        return !!$this->isEnabled($step) && !!$this->isVisible($step);
+    }
+
+    /**
      * Get the property name of a step by its index, property name, StepDetails object or Step object itself.
      * If the input is a StepDetails object, it returns the name directly.
      *
@@ -108,7 +123,6 @@ class WizardComponent extends Component
     {
         $currentStep = $currentStep ?? $this->currentStep;
         $currentIndex = $this->getStepIndex($currentStep);
-
         if ($currentIndex === false || $currentIndex <= 0) {
             return null; // No previous step or current step is the first one
         }
@@ -176,7 +190,7 @@ class WizardComponent extends Component
         $step = $this->getStep($step);
 
         if (method_exists($step, 'enabled')) {
-            return $step->enabled();
+            return !!$step->enabled();
         }
 
         return true; // Default to true if not found or no enabled method
@@ -187,36 +201,18 @@ class WizardComponent extends Component
         $step = $this->getStep($step);
 
         if (method_exists($step, 'visible')) {
-            return $step->visible();
+            return !!$step->visible();
         }
 
         return true; // Default to false if not found or no visible method
     }
 
-    /**
-     * is step accessible?
-     * This checks if the step is accessible based on its enabled and visible state.
-     * If the step is not found, it returns false.
-     * @param Step|string|StepDetails $step
-     * @return bool
-     */
-    public function isAccessible(Step|string|StepDetails $step) : bool
-    {
-        $step = $this->getStep($step);
-        if (!$step) {
-            return false; // Step not found
-        }
-        // Check if the step is enabled and visible
-        return $this->isEnabled($step) && $this->isVisible($step);
-    }
-
-    
     public function isValid(Step|string|StepDetails $step) : bool
     {
         $step = $this->getStep($step);
 
         if (method_exists($step, 'isValid')) {
-            return $step->isValid();
+            return !!$step->isValid();
         }
         
         // Default to true if no isValid method exists
@@ -254,13 +250,13 @@ class WizardComponent extends Component
      * It does not check if the step is accessible or visible.
      * If $accessible is true, it will check if it is the last visible and enabled step.
      * 
-     * @param Step|string|StepDetails $step
+     * @param Step|string|StepDetails|null $step
      * @param bool $accessible
      * @return bool
      */
-    public function isLastStep(Step|string|StepDetails $step, $accessible = false) : bool
+    public function isLastStep(mixed $step = null, $accessible = false) : bool
     {
-        $step = $this->getStep($step);
+        $step = $this->getStep($step ?? $this->currentStep);
         if (!$step) {
             return false; // Step not found
         }
