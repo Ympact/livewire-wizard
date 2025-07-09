@@ -15,3 +15,12 @@ a Laravel Livewire form wizard package.
 ```cmd
 composer require --dev ympact/wizard
 ```
+
+
+## Work in progress
+
+- [ ] Default views
+- [ ] Documentation
+- [ ] Examples
+- [ ] Writing tests
+- [ ] 
