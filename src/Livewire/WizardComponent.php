@@ -12,7 +12,29 @@ use ReflectionProperty;
 
 class WizardComponent extends Component
 {
+    /**
+     * @var string $currentStep
+     */
+    public $currentStep = null;
 
+    /**
+     * We mount the initial step.
+     * @return void
+     */
+    public function mount(){
+        // Initialize the current tab to the first tab if not set
+        if (is_null($this->currentStep)) {
+            $this->currentStep = $this->getStepName(0);
+        }
+    }
+
+    /**
+     * Get a step by its index, property name, StepDetails object or Step object itself.
+     * If the input is a Step object, it returns that object directly.
+     *
+     * @param int|string|StepDetails|Step $step
+     * @return Step|null
+     */
     public function getStep(int|string|StepDetails|Step $step) : ?Step
     {
         if ($step instanceof Step) {
@@ -32,6 +54,13 @@ class WizardComponent extends Component
         }
     }
 
+    /**
+     * Get the property name of a step by its index, property name, StepDetails object or Step object itself.
+     * If the input is a StepDetails object, it returns the name directly.
+     *
+     * @param int|Step|string|StepDetails $step
+     * @return string|null
+     */
     public function getStepName(int|Step|string|StepDetails $step) : ?string
     {
         if($step instanceOf StepDetails){
@@ -39,7 +68,7 @@ class WizardComponent extends Component
         }
         if(is_string($step)){
             // first try if $step is a property name already
-            if(property_exists($this, $step) && (new $step()) instanceof Step){
+            if(property_exists($this, $step) && (new $step()) instanceOf Step){
                 return $step;
             }
             // then try if $step is a class name
@@ -50,12 +79,23 @@ class WizardComponent extends Component
         if(is_numeric($step)){
             return $this->allSteps[array_keys( $this->allSteps )[$step]];
         }
+        if($step instanceof Step){
+            return $this->allSteps[$step::class];
+        }
 
         return null;
     }
 
-    public function getPreviousStep(string|Step $currentStep) : ?Step
+    /**
+     * Get the previous step based on the current step.
+     * If the current step is not provided, it uses the currentStep property.
+     * If there is no previous step, it returns null.
+     * @param string|Step|null $currentStep
+     * @return Step|null
+     */
+    public function getPreviousStep(mixed $currentStep = null) : ?Step
     {
+        $currentStep = $currentStep ?? $this->currentStep;
         $currentIndex = $this->getStepIndex($currentStep);
 
         if ($currentIndex === false || $currentIndex <= 0) {
@@ -65,8 +105,16 @@ class WizardComponent extends Component
         return $this->getStep($previousIndex) ?? null;
     }
 
-    public function getNextStep($currentStep) : ?Step
+    /**
+     * get the next step based on the current step.
+     * If the current step is not provided, it uses the currentStep property.
+     * If there is no next step, it returns null.
+     * @param string|Step|null $currentStep
+     * @return Step|null
+     */
+    public function getNextStep($currentStep = null) : ?Step
     {
+        $currentStep = $currentStep ?? $this->currentStep;
         $currentIndex = $this->getStepIndex($currentStep);
 
         if ($currentIndex === false || $currentIndex >= count($this->allSteps) - 1) {
@@ -76,9 +124,17 @@ class WizardComponent extends Component
         return $this->getStep($nextIndex) ?? null;
     }
 
-    public function getLastStep() : ?Step
+    /**
+     * Get the last step in the wizard.
+     * If $accessible is true, it will return the last step that is enabled and visible.
+     * If no steps are available, it returns null.
+     *
+     * @param bool $accessible
+     * @return Step|null
+     */
+    public function getLastStep($accessible = false) : ?Step
     {
-        $allSteps = $this->allSteps;
+        $allSteps = $this->getAllSteps($accessible);
         if (empty($allSteps)) {
             return null; // No steps available
         }
@@ -162,6 +218,135 @@ class WizardComponent extends Component
         return $this->steps->where('name', $name )->first();
     }
 
+    /**
+     * is the step the last (accessible) step?
+     * This checks if the step is the last step in the allSteps array.
+     * It does not check if the step is accessible or visible.
+     * If $accesible is true, it will check if it is the last visible and enabled step.
+     * 
+     * @param Step|string|StepDetails $step
+     * @param bool $accesible
+     * @return bool
+     */
+    public function isLastStep(Step|string|StepDetails $step, $accesible = false) : bool
+    {
+        $step = $this->getStep($step);
+        if (!$step) {
+            return false; // Step not found
+        }
+
+        // Get the last step in the allSteps array
+        $lastStep = $this->getLastStep();
+        if (!$lastStep) {
+            return false; // No last step found
+        }
+
+        // Compare the current step with the last step
+        return $step::class === $lastStep::class;
+    }
+
+    // gotoNextStep
+    public function gotoNextStep($dispatch = false) : ?Step
+    {
+        $currentStep = $this->getStep($this->currentStep);
+        if (!$currentStep) {
+            return null; // No current step found
+        }
+
+        $nextStep = $this->getNextStep($currentStep);
+
+        return $this->gotoStep($nextStep, $dispatch);
+    }
+
+    // gotoPreviousStep
+    public function gotoPreviousStep($dispatch = false) : ?Step
+    {
+        $currentStep = $this->getStep($this->currentStep);
+        if (!$currentStep) {
+            return null; // No current step found
+        }
+
+        $previousStep = $this->getPreviousStep($currentStep);
+
+        return $this->gotoStep($previousStep, $dispatch);
+    }
+
+    // gotoStep
+    public function gotoStep(Step|int|string|StepDetails $step, $dispatch = false) : ?Step
+    {
+        $step = $this->getStep($step);
+        if (!$step || !$this->isEnabled($step) || !$this->isVisible($step)) {
+            return null; // Step not found or not accessible
+        }
+
+        // Update current step to the specified step
+        $this->currentStep = $step->name;
+        if ($dispatch) {
+            $this->dispatch('stepChanged', ['step' => $step]);
+        }
+        return $step;
+    }
+
+    // gotoFirstStep
+    public function gotoFirstStep($dispatch = false) : ?Step
+    {
+        $firstStep = $this->getFirstStep();
+        if (!$firstStep || !$this->isEnabled($firstStep) || !$this->isVisible($firstStep)) {
+            return null; // No first step or not accessible
+        }
+
+        return $this->gotoStep($firstStep, $dispatch);
+    }
+
+    // gotoLastStep
+    public function gotoLastStep($dispatch = false, $accessible = true) : ?Step
+    {
+        $lastStep = $this->getLastStep($accessible);
+        if (!$lastStep || !$this->isEnabled($lastStep) || !$this->isVisible($lastStep)) {
+            return null; // No last step or not accessible
+        }
+
+        return $this->gotoStep($lastStep, $dispatch);
+    }
+
+    // gotoFirstInvalidStep
+    public function gotoFirstInvalidStep() : ?Step
+    {
+        // Iterate through all steps to find the first invalid step
+        foreach ($this->steps as $step) {
+            if (!$this->isValid($step)) {
+                return $this->gotoStep($step);
+            }
+        }
+
+        return null; // All steps are valid
+    }
+
+    // hasNextStep (visible)
+    public function hasNextStep() : bool
+    {
+        $currentStep = $this->getStep($this->currentStep);
+        if (!$currentStep) {
+            return false; // No current step found
+        }
+
+        $nextStep = $this->getNextStep($currentStep);
+        return $nextStep && $this->isVisible($nextStep); // && $this->isEnabled($nextStep)
+    }
+
+    // hasPreviousStep (visible)
+    public function hasPreviousStep() : bool
+    {
+        $currentStep = $this->getStep($this->currentStep);
+        if (!$currentStep) {
+            return false; // No current step found
+        }
+
+        $previousStep = $this->getPreviousStep($currentStep);
+        return $previousStep && $this->isVisible($previousStep); // && $this->isEnabled($previousStep)
+    }
+
+
     public function isAllValid() : bool
     {
         // Check if all steps are valid
@@ -177,15 +362,20 @@ class WizardComponent extends Component
         return collect($this->allSteps)->map(function ($name, $stepClass) {
             $step = $this->{$name};
             $name = (string) $name; // Ensure $name is a string
+            $index = $this->getStepIndex($stepClass);
 
             // if there is a method `stepDetails` in the component, use it to get the details
             $details = method_exists($this, 'stepDetails') ? $this->stepDetails() : [];
             
+            // if there is a method for custom keys use that
+            $marker = method_exists($this, 'stepMarker') ? $this->stepMarker($index + 1, $name) : null;
+            $marker = $marker ?? Arr::get($details, "{$name}.marker", $step->stepMarker ?? $index + 1); // Fallback to index if marker is not defined
+
             return new StepDetails(
-                key: $name,
+                index: $this->getStepIndex($stepClass),
                 name: $name,
                 class: $stepClass,
-                index: $this->getStepIndex($stepClass),
+                marker: $marker,
                 title: Arr::get($details, "{$name}.title", $step->stepTitle ?? $name),
                 description: Arr::get($details, "{$name}.description", $step->stepDescription ?? null),
                 icon: Arr::get($details, "{$name}.icon", $step->stepIcon ?? null),
@@ -195,7 +385,7 @@ class WizardComponent extends Component
     }
 
     #[Computed]
-    public function allSteps()
+    public function allSteps() : array
     {
         $steps = [];
         $reflection = new ReflectionClass($this);
@@ -212,5 +402,35 @@ class WizardComponent extends Component
         }
 
         return $steps;
+    }
+
+    /**
+     * Get all steps
+     * Optionally filter them based on accessibility, visibility, enabled state, and validity.
+     * @param mixed $accessible
+     * @param mixed $enabled
+     * @param mixed $visible
+     * @param mixed $valid
+     * @return array
+     */
+    public function getAllSteps($accessible = false, $enabled = false, $visible = false, $valid = false) : array
+    {
+        $allSteps = $this->allSteps;
+
+        if($accessible) {
+            $visible = true;
+            $enabled = true;
+        }
+
+        if ($enabled || $visible || $valid) {
+            // filter out the steps that are not enabled or visible
+            $allSteps = array_filter($allSteps, function($stepClass) use ($enabled, $visible, $valid) {
+                $step = $this->getStep($stepClass);
+                return (!$enabled || $this->isEnabled($step)) 
+                    && (!$visible || $this->isVisible($step))
+                    && (!$valid || $this->isValid($step));
+            });
+        }
+        return $allSteps;
     }
 }

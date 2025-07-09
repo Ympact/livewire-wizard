@@ -3,6 +3,7 @@
 namespace Ympact\Wizard;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Console\AboutCommand;
 
 class WizardServiceProvider extends ServiceProvider
 {
@@ -32,6 +33,8 @@ class WizardServiceProvider extends ServiceProvider
         if (! $this->app->runningInConsole()) {
             return;
         }
+
+        AboutCommand::add('Ympact Wizard', fn () => ['Version' => '0.0.1']);
 
         $this->commands([
 

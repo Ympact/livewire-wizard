@@ -16,10 +16,10 @@ class StepDetailsSynth extends Synth
     public function dehydrate($target)
     {
         return [[
-            'key' => $target->key,
-            'name' => $target->key,
-            'class' => $target->class,
             'index' => $target->index,
+            'name' => $target->name,
+            'class' => $target->class,
+            'marker' => $target->marker,
             'title' => $target->title,
             'description' => $target->description,
             'icon' => $target->icon,
@@ -32,16 +32,13 @@ class StepDetailsSynth extends Synth
     {
         $instance = new StepDetails;
  
-        $instance->key = $value['key'] ?? '';
+        $instance->index = $value['index'] ?? 0;
         $instance->class = $value['name'] ?? '';
         $instance->class = $value['class'] ?? '';
-        $instance->index = $value['index'] ?? 0;
+        $instance->marker = $value['marker'] ?? 1;
         $instance->title = $value['title'] ?? null;
         $instance->description = $value['description'] ?? null;
         $instance->icon = $value['icon'] ?? null;
-        //$instance->enabled = $value['enabled'] ?? true;
-        //$instance->visible = $value['visible'] ?? true;
-
  
         return $instance;
     }

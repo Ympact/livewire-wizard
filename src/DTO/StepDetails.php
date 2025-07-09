@@ -5,27 +5,27 @@ namespace Ymapct\Wizard\DTO;
 
 class StepDetails
 {
-    public string $key;
-     public string $name;
-    public string $class;
     public int $index;
+    public string $name;
+    public string $class;
+    public string $marker = null;
     public ?string $title = null;
     public ?string $description = null;
     public ?string $icon = null;
     
     public function __construct(
-        string $key = '',
+        int $index = 0,
         string $name = '',
         string $class = '',
-        int $index = 0,
+        string $marker = '1',
         ?string $title = null,
         ?string $description = null,
         ?string $icon = null
     ) {
-        $this->key = $key;
+        $this->index = $index;
         $this->name = $name;
         $this->class = $class;
-        $this->index = $index;
+        $this->marker = $marker;
         $this->title = $title;
         $this->description = $description;
         $this->icon = $icon;

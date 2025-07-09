@@ -1,11 +1,11 @@
 {
     "name": "ympact/wizard",
-    "description": "A form wizard component based on livewire",
+    "description": "A laravel livewire form wizard component.",
     "keywords": ["wizard", "forms", "laravel", "livewire", "components"],
     "type": "library",
     "require": {
         "php": "^8.3",
-        "illuminate/support": "^10.0|^11.0|^12.0",
+        "illuminate/support": "*",
         "livewire/flux": "^1.0|^2.0",
         "livewire/livewire": "^3.0",
         "illuminate/console": "^10.0|^11.0|^12.0",
@@ -16,7 +16,8 @@
     "require-dev": {
         "phpunit/phpunit": "^9.0|^10.0|^11.0|^12.0",
         "mockery/mockery": "^1.6|^2.0",
-        "orchestra/testbench": "^9.5|^10.0"
+        "orchestra/testbench": "^9.5|^10.0",
+        "phpstan/phpstan": "^2.1"
     },
     "license": "MIT",
     "autoload": {
@@ -37,5 +38,5 @@
             "email": "maurits@ympact-technologies.nl"
         }
     ],
-    "minimum-sstepility": "stable"
+    "minimum-stability": "stable"
 }
