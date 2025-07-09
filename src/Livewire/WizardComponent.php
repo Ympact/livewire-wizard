@@ -49,9 +49,19 @@ class WizardComponent extends Component
         // get the value of the steps array by the index or slug
         if (is_numeric($step)) {
             return $this->{$this->allSteps[array_keys( $this->allSteps )[$step] ]} ?? null;
-        } else {
-            return $this->{$this->allSteps[$step]} ?? null;
+        } 
+        if(is_string($step)){
+            // first try if $step is a property name already
+            if(property_exists($this, $step)){
+                return $this->{$step};
+            }
+            // then try if $step is a class name
+            if(array_key_exists($step, $this->allSteps)){
+                return $this->{$this->allSteps[$step]};
+            } 
         }
+        // if the step is not found, return null
+        return null;
     }
 
     /**
@@ -68,7 +78,7 @@ class WizardComponent extends Component
         }
         if(is_string($step)){
             // first try if $step is a property name already
-            if(property_exists($this, $step) && (new $step()) instanceOf Step){
+            if(property_exists($this, $step)){
                 return $step;
             }
             // then try if $step is a class name
@@ -255,7 +265,7 @@ class WizardComponent extends Component
 
         $nextStep = $this->getNextStep($currentStep);
 
-        return $this->gotoStep($nextStep, $dispatch);
+        return $nextStep ? $this->gotoStep($nextStep, $dispatch) : null;
     }
 
     // gotoPreviousStep
@@ -268,7 +278,7 @@ class WizardComponent extends Component
 
         $previousStep = $this->getPreviousStep($currentStep);
 
-        return $this->gotoStep($previousStep, $dispatch);
+        return $previousStep ? $this->gotoStep($previousStep, $dispatch) : null;
     }
 
     // gotoStep
@@ -280,7 +290,7 @@ class WizardComponent extends Component
         }
 
         // Update current step to the specified step
-        $this->currentStep = $step->name;
+        $this->currentStep = $this->getStepName($step);
         if ($dispatch) {
             $this->dispatch('stepChanged', ['step' => $step]);
         }
