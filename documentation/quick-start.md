@@ -3,10 +3,7 @@
 The wizard an Wizard Component (an extended Livewire component) in combination with Step components (extended Livewire Form components).
 That means that they the functionality of those base components can be used within your Wizard or Step classes.
 
-
-## Quick example
-
-### The Wizard component
+## The Wizard component
 
 For the wizard you create a `Wizard` component.
 It holds the Step components as public properties. The order of the steps is the order in which they will be rendered.
@@ -32,10 +29,9 @@ class Index extends Wizard
 }
 ```
 
-### A Step component
+## A Step component
 
-For each step you create `Step` component. It can define logic to determine whether the step is visible and enabled. 
-
+For each step you create `Step` component. It can define logic to determine whether the step is visible and enabled.
 
 ```php
 namespace App\Livewire\CheckoutForm\Steps;
@@ -57,9 +53,8 @@ class ContactStep extends Step
     }
 
     public function render(){
-        return view('livewire.check-out.steps.products');
+        return view('livewire.check-out.steps.contact');
     }
 }
 
 ```
-
