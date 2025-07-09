@@ -69,7 +69,7 @@ class WizardComponent extends Component
      * This checks if the step is accessible based on its enabled and visible state.
      * If the step is not found, it returns false.
      */
-    public function isAccessible(Step|string|StepDetails $step) : bool
+    public function isAccessible(Step|string|StepDetails|int $step) : bool
     {
         $step = $this->getStep($step);
         if (!$step) {
@@ -178,14 +178,14 @@ class WizardComponent extends Component
         return $this->getStep($firstStepClass);
     }
 
-    public function getStepIndex(Step|string $step) : int
+    public function getStepIndex(Step|string $step) : ?int
     {
         $stepClass = $step instanceof Step ? $step::class : $step;
         $index = array_search($stepClass, array_keys($this->allSteps));
-        return $index !== false ? $index : -1; // Return -1 if not found
+        return $index !== false ? $index : null; // Return -1 if not found
     }
 
-    public function isEnabled(Step|string|StepDetails $step) : bool
+    public function isEnabled(Step|string|StepDetails|int $step) : bool
     {
         $step = $this->getStep($step);
 
@@ -196,7 +196,7 @@ class WizardComponent extends Component
         return true; // Default to true if not found or no enabled method
     }
 
-    public function isVisible(Step|string|StepDetails $step) : bool
+    public function isVisible(Step|string|StepDetails|int $step) : bool
     {
         $step = $this->getStep($step);
 
@@ -207,7 +207,7 @@ class WizardComponent extends Component
         return true; // Default to false if not found or no visible method
     }
 
-    public function isValid(Step|string|StepDetails $step) : bool
+    public function isValid(Step|string|StepDetails|int $step) : bool
     {
         $step = $this->getStep($step);
 
@@ -219,7 +219,7 @@ class WizardComponent extends Component
         return true;
     }
 
-    public function getView(Step|string|StepDetails $step)
+    public function getView(Step|string|StepDetails|int $step): ?\Illuminate\Contracts\View\View
     {
         $step = $this->getStep($step);
 
@@ -250,7 +250,7 @@ class WizardComponent extends Component
      * It does not check if the step is accessible or visible.
      * If $accessible is true, it will check if it is the last visible and enabled step.
      * 
-     * @param Step|string|StepDetails|null $step
+     * @param Step|string|StepDetails|int|null $step
      * @param bool $accessible
      * @return bool
      */
@@ -349,9 +349,10 @@ class WizardComponent extends Component
     }
 
     // hasNextStep (visible)
-    public function hasNextStep($accessible = true) : bool
+    public function hasNextStep($step = null, $accessible = true) : bool
     {
-        $currentStep = $this->getStep($this->currentStep);
+        $step = $step ?? $this->currentStep;
+        $currentStep = $this->getStep($step);
         if (!$currentStep) {
             return false; // No current step found
         }
@@ -361,9 +362,10 @@ class WizardComponent extends Component
     }
 
     // hasPreviousStep (visible)
-    public function hasPreviousStep() : bool
+    public function hasPreviousStep($step = null) : bool
     {
-        $currentStep = $this->getStep($this->currentStep);
+        $step = $step ?? $this->currentStep;
+        $currentStep = $this->getStep($step);
         if (!$currentStep) {
             return false; // No current step found
         }
@@ -381,6 +383,9 @@ class WizardComponent extends Component
         });
     }
 
+    /**
+     * @todo: rename to stepsMeta
+     */
     #[Computed]
     public function steps()
     {
@@ -405,11 +410,13 @@ class WizardComponent extends Component
                 title: Arr::get($details, "{$name}.title", $step->stepTitle ?? $name),
                 description: Arr::get($details, "{$name}.description", $step->stepDescription ?? null),
                 icon: Arr::get($details, "{$name}.icon", $step->stepIcon ?? null),
-            );
-            
+            );   
         });
     }
 
+    /**
+     * @todo: rename to steps
+     */
     #[Computed]
     public function allSteps() : array
     {
@@ -432,6 +439,7 @@ class WizardComponent extends Component
 
     /**
      * Get all steps
+     * @todo rename to getSteps
      * Optionally filter them based on accessibility, visibility, enabled state, and validity.
      * @param mixed $accessible
      * @param mixed $enabled

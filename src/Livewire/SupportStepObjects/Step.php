@@ -6,6 +6,9 @@ use Illuminate\Validation\ValidationException;
 use Livewire\Form;
 use Ympact\Wizard\DTO\StepDetails;
 
+/**
+ * @method \Ympact\Wizard\Livewire\WizardComponent getComponent()
+ */
 abstract class Step extends Form
 {
 

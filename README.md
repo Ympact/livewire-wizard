@@ -26,11 +26,11 @@ composer require --dev ympact/wizard
 
 Documentation and examples can be found here: [Documentation](/documentation/index.md)
 
-
 ## Work in progress
 
 - [ ] Default views
+- [ ] Renaming some methods / computed properties
+- [ ] Support for step summaries
 - [ ] Documentation
 - [ ] Examples
 - [ ] Writing tests
-
