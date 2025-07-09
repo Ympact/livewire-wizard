@@ -1,6 +1,6 @@
 <?php
 
-namespace Ymapct\Wizard\Livewire\SupportStepObjects;
+namespace Ympact\Wizard\Livewire\SupportStepObjects;
 
 use Livewire\Drawer\Utils;
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;

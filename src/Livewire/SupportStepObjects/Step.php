@@ -1,10 +1,10 @@
 <?php
 
-namespace Ymapct\Wizard\Livewire\SupportStepObjects;
+namespace Ympact\Wizard\Livewire\SupportStepObjects;
 
 use Illuminate\Validation\ValidationException;
 use Livewire\Form;
-use Ymapct\Wizard\DTO\StepDetails;
+use Ympact\Wizard\DTO\StepDetails;
 
 abstract class Step extends Form
 {

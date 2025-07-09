@@ -1,6 +1,6 @@
 <?php
 
-namespace Ymapct\Wizard\Traits;
+namespace Ympact\Wizard\Traits;
 
 trait MarkerTrait
 {

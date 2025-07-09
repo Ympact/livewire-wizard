@@ -1,6 +1,6 @@
 <?php
 
-namespace Ymapct\Wizard\DTO;
+namespace Ympact\Wizard\DTO;
 
 
 class StepDetails

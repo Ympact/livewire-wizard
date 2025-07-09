@@ -1,8 +1,8 @@
 <?php
 
-namespace Ymapct\Wizard;
+namespace Ympact\Wizard;
 
-use Ymapct\Wizard\Livewire\WizardComponent as BaseWizardComponent;
+use Ympact\Wizard\Livewire\WizardComponent as BaseWizardComponent;
 
 class Wizard extends BaseWizardComponent {
 }

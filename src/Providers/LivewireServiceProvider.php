@@ -1,11 +1,11 @@
 <?php
 
-namespace Ymapct\Wizard\Providers;
+namespace Ympact\Wizard\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\ComponentHookRegistry;
 use Livewire\Livewire;
-use Ymapct\Wizard\Livewire\SupportStepObjects;
+use Ympact\Wizard\Livewire\SupportStepObjects;
 
 
 class LivewireServiceProvider extends ServiceProvider
