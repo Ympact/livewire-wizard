@@ -101,9 +101,10 @@ class WizardComponent extends Component
      * If the current step is not provided, it uses the currentStep property.
      * If there is no previous step, it returns null.
      * @param string|Step|null $currentStep
+     * @param bool $accessible check if the previous step is accessible
      * @return Step|null
      */
-    public function getPreviousStep(mixed $currentStep = null) : ?Step
+    public function getPreviousStep(mixed $currentStep = null, $accessible = true) : ?Step
     {
         $currentStep = $currentStep ?? $this->currentStep;
         $currentIndex = $this->getStepIndex($currentStep);
@@ -112,17 +113,18 @@ class WizardComponent extends Component
             return null; // No previous step or current step is the first one
         }
         $previousIndex = $currentIndex - 1;
-        return $this->getStep($previousIndex) ?? null;
+        return (!$accessible || $this->isAccessible($previousIndex)) ? $this->getStep($previousIndex) : null;
     }
 
     /**
      * get the next step based on the current step.
      * If the current step is not provided, it uses the currentStep property.
      * If there is no next step, it returns null.
-     * @param string|Step|null $currentStep
+     * @param string|Step|null $currentStep 
+     * @param bool $accessible check if the next step is accessible
      * @return Step|null
      */
-    public function getNextStep($currentStep = null) : ?Step
+    public function getNextStep($currentStep = null, $accessible = true) : ?Step
     {
         $currentStep = $currentStep ?? $this->currentStep;
         $currentIndex = $this->getStepIndex($currentStep);
@@ -131,7 +133,7 @@ class WizardComponent extends Component
             return null; // No next step or current step is the last one
         }
         $nextIndex = $currentIndex + 1;
-        return $this->getStep($nextIndex) ?? null;
+        return (!$accessible || $this->isAccessible($nextIndex)) ? $this->getStep($nextIndex) : null;
     }
 
     /**
@@ -191,6 +193,24 @@ class WizardComponent extends Component
         return true; // Default to false if not found or no visible method
     }
 
+    /**
+     * is step accessible?
+     * This checks if the step is accessible based on its enabled and visible state.
+     * If the step is not found, it returns false.
+     * @param Step|string|StepDetails $step
+     * @return bool
+     */
+    public function isAccessible(Step|string|StepDetails $step) : bool
+    {
+        $step = $this->getStep($step);
+        if (!$step) {
+            return false; // Step not found
+        }
+        // Check if the step is enabled and visible
+        return $this->isEnabled($step) && $this->isVisible($step);
+    }
+
+    
     public function isValid(Step|string|StepDetails $step) : bool
     {
         $step = $this->getStep($step);
@@ -232,13 +252,13 @@ class WizardComponent extends Component
      * is the step the last (accessible) step?
      * This checks if the step is the last step in the allSteps array.
      * It does not check if the step is accessible or visible.
-     * If $accesible is true, it will check if it is the last visible and enabled step.
+     * If $accessible is true, it will check if it is the last visible and enabled step.
      * 
      * @param Step|string|StepDetails $step
-     * @param bool $accesible
+     * @param bool $accessible
      * @return bool
      */
-    public function isLastStep(Step|string|StepDetails $step, $accesible = false) : bool
+    public function isLastStep(Step|string|StepDetails $step, $accessible = false) : bool
     {
         $step = $this->getStep($step);
         if (!$step) {
@@ -246,7 +266,7 @@ class WizardComponent extends Component
         }
 
         // Get the last step in the allSteps array
-        $lastStep = $this->getLastStep();
+        $lastStep = $this->getLastStep($accessible);
         if (!$lastStep) {
             return false; // No last step found
         }
@@ -333,7 +353,7 @@ class WizardComponent extends Component
     }
 
     // hasNextStep (visible)
-    public function hasNextStep() : bool
+    public function hasNextStep($accessible = true) : bool
     {
         $currentStep = $this->getStep($this->currentStep);
         if (!$currentStep) {
