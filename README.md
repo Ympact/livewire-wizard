@@ -8,13 +8,23 @@ a Laravel Livewire form wizard package.
 
 - livewire: 3.0
 
-
 ## Installation
-
 
 ```cmd
 composer require --dev ympact/wizard
 ```
+
+## Features
+
+- Next/Previous steps
+- Check validation of each step
+- Disable/Enable steps
+- Hide/Show steps
+- Customize each step statically or dynamically
+
+## Documentation
+
+Documentation and examples can be found here: [Documentation](/documentation/index.md)
 
 
 ## Work in progress
@@ -23,4 +33,4 @@ composer require --dev ympact/wizard
 - [ ] Documentation
 - [ ] Examples
 - [ ] Writing tests
-- [ ] 
+
