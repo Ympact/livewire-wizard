@@ -2,7 +2,7 @@
 
 a Laravel Livewire form wizard package.
 
-[![Packagist Version](https://img.shields.io/packagist/v/ympact/wizard)](https://packagist.org/packages/ympact/wizard)
+[[![Packagist Version](https://img.shields.io/packagist/v/ympact/laravel-livewire-wizard)](https://packagist.org/packages/ympact/laravel-livewire-wizard)
 
 ## Requirements
 
@@ -11,7 +11,7 @@ a Laravel Livewire form wizard package.
 ## Installation
 
 ```cmd
-composer require --dev ympact/wizard
+composer require ympact/laravel-livewire-wizard
 ```
 
 ## Features
@@ -21,6 +21,8 @@ composer require --dev ympact/wizard
 - Disable/Enable steps
 - Hide/Show steps
 - Customize each step statically or dynamically
+
+## Quick start
 
 ## Documentation
 
@@ -34,3 +36,9 @@ Documentation and examples can be found here: [Documentation](/documentation/ind
 - [ ] Documentation
 - [ ] Examples
 - [ ] Writing tests
+
+## Roadmap
+
+- [ ] Livewire V4 support
+- [ ] Hierarchichal and circular processes
+- [ ] Duration timer
