@@ -1,9 +1,9 @@
 <?php
 
-namespace Ymapct\Wizard\DTO;
+namespace Ympact\Wizard\DTO;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
-use Ymapct\Wizard\DTO\StepDetails;
+use Ympact\Wizard\DTO\StepDetails;
 
 class StepDetailsSynth extends Synth
 {

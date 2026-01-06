@@ -1,8 +1,8 @@
 <?php
 
-namespace Ymapct\Wizard;
+namespace Ympact\Wizard;
 
-use Ymapct\Wizard\Livewire\SupportStepObjects\Step as BaseStep;
+use Ympact\Wizard\Livewire\SupportStepObjects\Step as BaseStep;
 
 class Step extends BaseStep {
 }

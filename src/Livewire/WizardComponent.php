@@ -1,12 +1,12 @@
 <?php
 
-namespace Ymapct\Wizard\Livewire;
+namespace Ympact\Wizard\Livewire;
 
 use Illuminate\Support\Arr;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Ymapct\Wizard\DTO\StepDetails;
-use Ymapct\Wizard\Livewire\SupportStepObjects\Step;
+use Ympact\Wizard\DTO\StepDetails;
+use Ympact\Wizard\Livewire\SupportStepObjects\Step;
 use ReflectionClass;
 use ReflectionProperty;
 
