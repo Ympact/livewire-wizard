@@ -4,9 +4,9 @@
     "keywords": ["wizard", "forms", "laravel", "livewire", "components"],
     "type": "library",
     "require": {
-        "php": "^8.2|^8.3|^8.4",
+        "php": "^8.2|^8.3|^8.4|^8.5",
         "illuminate/support": "*",
-        "livewire/livewire": "^3.0",
+        "livewire/livewire": "^3.0|4.0@beta|^4.0",
         "illuminate/console": "^10.0|^11.0|^12.0",
         "illuminate/view": "^10.0|^11.0|^12.0",
         "symfony/console": "^6.0|^7.0",
@@ -16,12 +16,27 @@
         "phpunit/phpunit": "^9.0|^10.0|^11.0|^12.0",
         "mockery/mockery": "^1.6|^2.0",
         "orchestra/testbench": "^9.5|^10.0",
-        "phpstan/phpstan": "^2.1"
+        "phpstan/phpstan": "^2.1",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "laravel/pint": "^1.6",
+        "larastan/larastan": "^3.8"
     },
     "license": "MIT",
+    "scripts": {
+        "test": "pest",
+        "pint": "pint --test",
+        "pint:fix": "pint",
+        "phpstan": "phpstan analyse -c phpstan.neon"
+    },
     "autoload": {
         "psr-4": {
             "Ympact\\Wizard\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "extra": {
@@ -37,5 +52,10 @@
             "email": "maurits@ympact-technologies.nl"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
 }

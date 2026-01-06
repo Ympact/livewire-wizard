@@ -10,9 +10,10 @@ trait MarkerTrait
         $letter = '';
         while ($number > 0) {
             $mod = ($number - 1) % 26;
-            $letter = chr(65 + $mod) . $letter; // 65 is ASCII for 'A'
-            $number = (int)(($number - $mod) / 26);
+            $letter = chr(65 + $mod).$letter; // 65 is ASCII for 'A'
+            $number = (int) (($number - $mod) / 26);
         }
+
         return $letter;
     }
 
@@ -41,6 +42,7 @@ trait MarkerTrait
                 $number -= $value;
             }
         }
+
         return $roman;
     }
 }

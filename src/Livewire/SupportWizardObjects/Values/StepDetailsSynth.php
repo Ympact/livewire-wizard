@@ -1,19 +1,22 @@
 <?php
 
-namespace Ympact\Wizard\DTO;
+namespace Ympact\Wizard\Livewire\SupportWizardObjects\Values;
 
 use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
-use Ympact\Wizard\DTO\StepDetails;
 
 class StepDetailsSynth extends Synth
 {
-    public static $key = 'step-details';
- 
-    public static function match($target)
+    public static string $key = 'step-details';
+
+    public static function match(mixed $target): bool
     {
         return $target instanceof StepDetails;
     }
-    public function dehydrate($target)
+
+    /**
+     * @return array{0: array<string,mixed>,1: array<string,mixed>}
+     */
+    public function dehydrate(mixed $target): array
     {
         return [[
             'index' => $target->index,
@@ -23,15 +26,15 @@ class StepDetailsSynth extends Synth
             'title' => $target->title,
             'description' => $target->description,
             'icon' => $target->icon,
-            //'enabled' => $target->enabled,
-            //'visible' => $target->visible,
+            // 'enabled' => $target->enabled,
+            // 'visible' => $target->visible,
         ], []];
     }
- 
-    public function hydrate($value)
+
+    public function hydrate(mixed $value): StepDetails
     {
-        $instance = new StepDetails;
- 
+        $instance = new StepDetails();
+
         $instance->index = $value['index'] ?? 0;
         $instance->class = $value['name'] ?? '';
         $instance->class = $value['class'] ?? '';
@@ -39,16 +42,16 @@ class StepDetailsSynth extends Synth
         $instance->title = $value['title'] ?? null;
         $instance->description = $value['description'] ?? null;
         $instance->icon = $value['icon'] ?? null;
- 
+
         return $instance;
     }
- 
-    public function get(&$target, $key) 
+
+    public function get(mixed &$target, mixed $key): mixed
     {
         return $target->{$key};
     }
- 
-    public function set(&$target, $key, $value)
+
+    public function set(mixed &$target, mixed $key, mixed $value): void
     {
         $target->{$key} = $value;
     }

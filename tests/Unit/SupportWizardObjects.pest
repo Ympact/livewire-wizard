@@ -1,0 +1,55 @@
+<?php
+
+use Ympact\Wizard\Livewire\SupportWizardObjects\Wizard;
+use Ympact\Wizard\Livewire\SupportWizardObjects\Step;
+use Ympact\Wizard\Livewire\SupportWizardObjects\Values\StepDetails;
+use Illuminate\Validation\ValidationException;
+use Livewire\Component;
+
+it('step is valid when no rules are defined', function () {
+    $step = new class extends Step {
+        public function __construct() {}
+    };
+
+    expect($step->isValid())->toBeTrue();
+});
+
+it('step is invalid when validation fails', function () {
+    $step = new class extends Step {
+        public function __construct() {}
+
+        protected function rules(): array
+        {
+            return ['field' => 'required'];
+        }
+
+        public function validate(...$args)
+        {
+            throw ValidationException::withMessages(['field' => 'required']);
+        }
+    };
+
+    expect($step->isValid())->toBeFalse();
+});
+
+it('wizard returns null for out of range numeric index', function () {
+    $component = new class extends Component {};
+    $wizard = new Wizard($component, 'w');
+
+    $wizard->steps = [];
+
+    expect($wizard->getStep(0))->toBeNull();
+});
+
+it('wizard resolves step from StepDetails dto', function () {
+    $component = new class extends Component {};
+    $wizard = new Wizard($component, 'w');
+
+    $step = new class extends Step { public function __construct() {} };
+    $wizard->steps = ['App\\S' => 'prop'];
+    $wizard->prop = $step;
+
+    $details = new StepDetails(index: 0, name: 'prop', class: 'App\\S', marker: '1');
+
+    expect($wizard->getStep($details))->toBe($step);
+});

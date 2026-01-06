@@ -1,23 +1,34 @@
 <?php
 
-namespace Ympact\Wizard\Livewire\SupportStepObjects;
+namespace Ympact\Wizard\Livewire\SupportWizardObjects;
 
 use Illuminate\Validation\ValidationException;
 use Livewire\Form;
-use Ympact\Wizard\DTO\StepDetails;
+use Ympact\Wizard\Livewire\SupportWizardObjects\Values\StepDetails;
 
 /**
- * @method \Ympact\Wizard\Livewire\WizardComponent getComponent()
+ * @method \Ympact\Wizard\Livewire\Components\WizardComponent getComponent()
  */
 abstract class Step extends Form
 {
-
-    public function enabled(){
+    public function enabled(): bool
+    {
         return true;
     }
 
-    public function visible(){
+    public function visible(): bool
+    {
         return true;
+    }
+    
+    /**
+     * Validation rules for the step form.
+     *
+     * @return array<string,mixed>
+     */
+    protected function rules(): array
+    {
+        return [];
     }
 
     public function isValid(): bool
@@ -29,6 +40,7 @@ abstract class Step extends Form
         }
         try {
             $this->validate();
+
             return true;
         } catch (ValidationException $e) {
             return false;
@@ -52,20 +64,16 @@ abstract class Step extends Form
 
     public function getLastStep(): ?Step
     {
-        $allSteps = $this->getComponent()->getAllSteps();
-        return end($allSteps);
+        return $this->getComponent()->getLastStep();
     }
 
     public function getFirstStep(): ?Step
     {
-        $allSteps = $this->getComponent()->getAllSteps();
-        return reset($allSteps);
+        return $this->getComponent()->getFirstStep();
     }
 
     public function getOwnIndex(): int
     {
         return $this->getComponent()->getStepIndex($this);
     }
-
-
 }

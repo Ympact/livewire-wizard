@@ -2,7 +2,6 @@
 
 namespace Ympact\Wizard;
 
-use Ympact\Wizard\Livewire\WizardComponent as BaseWizardComponent;
+use Ympact\Wizard\Livewire\SupportWizardObjects\Wizard as BaseWizard;
 
-class Wizard extends BaseWizardComponent {
-}
+class Wizard extends BaseWizard {}

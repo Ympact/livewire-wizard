@@ -1,5 +1,18 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
 parameters:
-    level: 12
- 
+    level: 7
     paths:
         - src
+    inferPrivatePropertyTypeFromConstructor: true
+    #checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        -
+            message: '#Trait .* is used zero times and is not analysed#'
+            paths:
+                - src/Livewire/SupportWizardObjects/HandlesStepObjects.php
+                - src/Livewire/SupportWizardObjects/HandlesWizardObjects.php
+                - src/Traits/MarkerTrait.php

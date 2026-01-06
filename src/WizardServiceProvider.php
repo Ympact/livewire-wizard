@@ -2,15 +2,12 @@
 
 namespace Ympact\Wizard;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Console\AboutCommand;
+use Illuminate\Support\ServiceProvider;
 
 class WizardServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-
-    }
+    public function register(): void {}
 
     public function boot(): void
     {
@@ -21,8 +18,8 @@ class WizardServiceProvider extends ServiceProvider
         // Register the commands
         $this->bootCommands();
     }
-    
-    public function bootCommands()
+
+    public function bootCommands(): void
     {
         if (! $this->app->runningInConsole()) {
             return;

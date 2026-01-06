@@ -5,23 +5,21 @@ namespace Ympact\Wizard\Providers;
 use Illuminate\Support\ServiceProvider;
 use Livewire\ComponentHookRegistry;
 use Livewire\Livewire;
-use Ympact\Wizard\Livewire\SupportStepObjects;
-
+use Ympact\Wizard\Livewire\SupportWizardObjects;
 
 class LivewireServiceProvider extends ServiceProvider
 {
-
     public function boot(): void
     {
 
         foreach ([
-            SupportStepObjects\StepObjectSynth::class,
+            SupportWizardObjects\StepObjectSynth::class,
         ] as $synth) {
             Livewire::propertySynthesizer($synth);
         }
 
         foreach ([
-            SupportStepObjects\SupportStepObjects::class,
+            SupportWizardObjects\SupportWizardObjects::class,
         ] as $feature) {
             Livewire::componentHook($feature);
         }

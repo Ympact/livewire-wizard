@@ -1,22 +1,26 @@
 <?php
 
-namespace Ympact\Wizard\Livewire\SupportStepObjects;
+namespace Ympact\Wizard\Livewire\SupportWizardObjects;
 
 use Livewire\Drawer\Utils;
-use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 use Livewire\Features\SupportAttributes\AttributeCollection;
+use Livewire\Mechanisms\HandleComponents\Synthesizers\Synth;
 
 use function Livewire\wrap;
 
-class StepObjectSynth extends Synth {
-    public static $key = 'step';
+class StepObjectSynth extends Synth
+{
+    public static string $key = 'step';
 
-    static function match($target)
+    public static function match(mixed $target): bool
     {
         return $target instanceof Step;
     }
 
-    function dehydrate($target, $dehydrateChild)
+    /**
+     * @return array{0: array<string,mixed>,1: array<string,mixed>}
+     */
+    public function dehydrate(mixed $target, callable $dehydrateChild): array
     {
         $data = $target->toArray();
 
@@ -27,7 +31,11 @@ class StepObjectSynth extends Synth {
         return [$data, ['class' => get_class($target)]];
     }
 
-    function hydrate($data, $meta, $hydrateChild)
+    /**
+     * @param array<string,mixed> $data
+     * @param array<string,mixed> $meta
+     */
+    public function hydrate(array $data, array $meta, callable $hydrateChild): object
     {
         $step = new $meta['class']($this->context->component, $this->path);
 
@@ -46,7 +54,7 @@ class StepObjectSynth extends Synth {
         return $step;
     }
 
-    function set(&$target, $key, $value)
+    public function set(mixed &$target, mixed $key, mixed $value): void
     {
         if ($value === null && Utils::propertyIsTyped($target, $key) && ! Utils::getProperty($target, $key)->getType()->allowsNull()) {
             unset($target->$key);
@@ -55,10 +63,10 @@ class StepObjectSynth extends Synth {
         }
     }
 
-    public static function bootStepObject($component, $step, $path)
+    public static function bootStepObject(mixed $component, mixed $step, string $path): callable
     {
         $component->mergeOutsideAttributes(
-            AttributeCollection::fromComponent($component, $step, $path . '.')
+            AttributeCollection::fromComponent($component, $step, $path.'.')
         );
 
         return function () use ($step) {
@@ -66,4 +74,3 @@ class StepObjectSynth extends Synth {
         };
     }
 }
-

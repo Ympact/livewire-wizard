@@ -2,7 +2,6 @@
 
 namespace Ympact\Wizard;
 
-use Ympact\Wizard\Livewire\SupportStepObjects\Step as BaseStep;
+use Ympact\Wizard\Livewire\SupportWizardObjects\Step as BaseStep;
 
-class Step extends BaseStep {
-}
+class Step extends BaseStep {}

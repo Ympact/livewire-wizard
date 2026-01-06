@@ -1,18 +1,23 @@
 <?php
 
-namespace Ympact\Wizard\DTO;
-
+namespace Ympact\Wizard\Livewire\SupportWizardObjects\Values;
 
 class StepDetails
 {
     public int $index;
+
     public string $name;
+
     public string $class;
-    public string $marker = null;
+
+    public string $marker;
+
     public ?string $title = null;
+
     public ?string $description = null;
+
     public ?string $icon = null;
-    
+
     public function __construct(
         int $index = 0,
         string $name = '',
