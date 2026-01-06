@@ -1,5 +1,5 @@
 {
-    "name": "ympact/laravel-livewire-wizard",
+    "name": "ympact/livewire-wizard",
     "description": "A laravel livewire form wizard component.",
     "keywords": ["wizard", "forms", "laravel", "livewire", "components"],
     "type": "library",
