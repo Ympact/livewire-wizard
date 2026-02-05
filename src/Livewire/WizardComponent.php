@@ -15,6 +15,7 @@ class WizardComponent extends Component
 
     public function getStep(int|string|StepDetails|Step $step) : ?Step
     {
+        dump($step);
         if ($step instanceof Step) {
             // if the input is a Step object, return it directly
             return $step;
@@ -28,7 +29,18 @@ class WizardComponent extends Component
         if (is_numeric($step)) {
             return $this->{$this->allSteps[array_keys( $this->allSteps )[$step] ]} ?? null;
         } else {
-            return $this->{$this->allSteps[$step]} ?? null;
+            //dump($this, $step);
+            if(array_key_exists($step, $this->allSteps)){
+                // we have a key (class name) of the allSteps array, so we can return the step by the class name
+                return $this->{$this->allSteps[$step]} ?? null;
+            }
+            if(property_exists($this, $step)){
+                // check if the property is a step class, if so return it
+                if(is_subclass_of(get_class($this->{$step}), Step::class)){
+                    return $this->{$step};
+                }
+            } 
+            return null;
         }
     }
 
@@ -141,6 +153,10 @@ class WizardComponent extends Component
     {
         $step = $this->getStep($step);
 
+        if(!$step){
+            return null;
+        }   
+        
         if (method_exists($step, 'render')) {
             return $step->render();
         }

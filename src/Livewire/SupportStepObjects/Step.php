@@ -3,6 +3,7 @@
 namespace Ympact\Wizard\Livewire\SupportStepObjects;
 
 use Illuminate\Validation\ValidationException;
+use Livewire\Component;
 use Livewire\Form;
 use Ympact\Wizard\DTO\StepDetails;
 
@@ -30,6 +31,11 @@ abstract class Step extends Form
         } catch (ValidationException $e) {
             return false;
         }
+    }
+
+    public function wizard(): Component
+    {
+        return $this->getComponent();
     }
 
     public function getStep(int|string|StepDetails|Step $step): ?Step
