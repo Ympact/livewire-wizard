@@ -15,7 +15,6 @@ class WizardComponent extends Component
 
     public function getStep(int|string|StepDetails|Step $step) : ?Step
     {
-        dump($step);
         if ($step instanceof Step) {
             // if the input is a Step object, return it directly
             return $step;
