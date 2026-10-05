@@ -1,10 +1,20 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
+  # No push trigger. There is no dev branch here, so it only ever fired on main, where a pull
+  # request has already run this matrix with the change merged in. main is not protected, so
+  # nothing enforces a green pull request either; dispatch this workflow to check main itself.
   pull_request:
     branches: [ main ]
+
+  workflow_dispatch:
+
+# A push to a pull request makes the run for its previous commit moot. Keyed by pull request
+# number rather than by branch name, because two forks can use the same one and neither of
+# those runs supersedes the other.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
@@ -13,21 +23,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ '8.2', '8.3', '8.4', '8.5' ]
-        laravel: [ '11', '12' ]
-        livewire: [ '^3.0', '4.0@beta', '^4.0' ]
-        exclude:
-          - php: '8.2'
-            livewire: '4.0@beta'
-          - php: '8.2'
-            livewire: '^4.0'
+        # PHP 8.3 and below and Laravel 11 are gone, and so is the Livewire 4 beta now that
+        # ^4.0 is released and covers it. That takes the matrix from 22 legs to 4; composer.json
+        # still permits the older versions without this workflow claiming to cover them.
+        php: [ '8.4', '8.5' ]
+        laravel: [ '12' ]
+        livewire: [ '^3.0', '^4.0' ]
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup PHP
-        uses: shivammathur/setup-php@v4
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           tools: composer:v2
